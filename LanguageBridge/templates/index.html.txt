@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section with Van Garde Style -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 hero-content">
+                <h1 class="hero-title">URL GÜVENLİK <br> TARAYICI</h1>
+                <p class="hero-subtitle">Ziyaret etmeden önce web sitelerinin güvenliğini kontrol edin. Kimlik avı ve kötü amaçlı yazılımlara karşı kendinizi koruyun.</p>
+            </div>
+        </div>
+        
+        <!-- Scanner Form -->
+        <div class="row mt-5">
+            <div class="col-lg-8">
+                <div class="scan-form-container">
+                    <h4 class="mb-4"><i class="fas fa-search me-2"></i>BİR URL KONTROL EDİN</h4>
+                    <!-- URL Form -->
+                    <form id="url-scan-form" method="GET" action="/scan">
+                        <div class="url-input-container">
+                            <div class="mb-4">
+                                <input type="text" class="form-control" id="url-input" name="url"
+                                       placeholder="Kontrol etmek istediğiniz URL'yi girin" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" id="scan-button" class="btn btn-scanner">
+                                    <i class="fas fa-shield-alt me-2"></i>GÜVENLİK KONTROLÜ YAP
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <!-- Loading spinner -->
+                    <div id="spinner" class="spinner-container text-center" style="display: none;">
+                        <div class="spinner-border" style="color: var(--accent-color);" role="status">
+                            <span class="visually-hidden">Yükleniyor...</span>
+                        </div>
+                        <p class="loading-text mt-2">URL güvenliği kontrol ediliyor...</p>
+                    </div>
+                    
+                    <script>
+                    // Form gönderilmeden önce yükleme ekranını göster ve giriş kontrolü yap
+                    document.getElementById('url-scan-form').addEventListener('submit', function(e) {
+                        e.preventDefault(); // Form gönderimini durdur
+                        
+                        const urlInput = document.getElementById('url-input');
+                        let url = urlInput.value.trim();
+                        
+                        if (url === '') {
+                            alert('Lütfen bir URL giriniz.');
+                            return false;
+                        }
+                        
+                        // URL protokolü ekle eğer yoksa
+                        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'http://' + url;
+                            urlInput.value = url; // Protokolü eklenmiş URL'yi forma yaz
+                        }
+                        
+                        // Spinner göster
+                        document.getElementById('spinner').style.display = 'block';
+                        document.getElementById('scan-button').disabled = true;
+                        
+                        // Formu gönder
+                        this.submit();
+                    });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">NEDEN URL GÜVENLİK TARAYICI?</h2>
+            <p class="lead">Gelişmiş güvenlik özellikleriyle internette daha güvenli gezinin</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-virus-slash feature-icon"></i>
+                    <h3 class="feature-title">Zararlı Yazılım Tespiti</h3>
+                    <p>Google Safe Browsing API kullanarak zararlı yazılım barındıran web sitelerini tespit eder ve sizi korur.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-user-shield feature-icon"></i>
+                    <h3 class="feature-title">Kimlik Avı Koruması</h3>
+                    <p>Bilgilerinizi çalmayı hedefleyen sahte web sitelerini belirler ve sizi uyarır.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-history feature-icon"></i>
+                    <h3 class="feature-title">Tarama Geçmişi</h3>
+                    <p>Daha önce kontrol ettiğiniz tüm URL'leri ve güvenlik durumlarını kolayca görüntüleyin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-black">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">NASIL ÇALIŞIR?</h2>
+            <p class="lead">Basit üç adımda güvenlik kontrolünü tamamlayın</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <span class="d-block mb-3" style="font-size: 3rem; font-weight: 800; color: var(--accent-color);">01</span>
+                    <h3 class="feature-title">URL Girin</h3>
+                    <p>Kontrol etmek istediğiniz web sitesinin adresini girin. Protokolü (http://) unutsanız bile otomatik olarak eklenir.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <span class="d-block mb-3" style="font-size: 3rem; font-weight: 800; color: var(--accent-color);">02</span>
+                    <h3 class="feature-title">Taramayı Başlatın</h3>
+                    <p>Güvenlik Kontrolü Yap butonuna tıklayın ve Google Safe Browsing API ile tarama işlemini başlatın.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <span class="d-block mb-3" style="font-size: 3rem; font-weight: 800; color: var(--accent-color);">03</span>
+                    <h3 class="feature-title">Sonuçları Görüntüleyin</h3>
+                    <p>Detaylı güvenlik raporunu inceleyin ve web sitesinin güvenli olup olmadığına karar verin.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Security Tips -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="mb-4">SİBER GÜVENLİK İPUÇLARI</h2>
+            <p class="lead">Güvenliğiniz için dikkat etmeniz gereken noktalar</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="feature-card">
+                    <div class="accordion" id="securityTipsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                       data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <i class="fas fa-link me-2" style="color: var(--accent-color);"></i> URL'leri Daima Kontrol Edin
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                                 data-bs-parent="#securityTipsAccordion">
+                                <div class="accordion-body">
+                                    E-posta veya sosyal medyada gelen linklere tıklamadan önce URL'yi kontrol edin. 
+                                    Resmi görünen ancak URL'si farklı olan siteler kimlik avı saldırısı olabilir. URL Güvenlik Tarayıcı
+                                    ile tüm şüpheli linkleri kolayca kontrol edebilirsiniz.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                       data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    <i class="fas fa-lock me-2" style="color: var(--accent-color);"></i> Güvenli Bağlantıları Tercih Edin
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                                 data-bs-parent="#securityTipsAccordion">
+                                <div class="accordion-body">
+                                    Hassas bilgilerinizi (kredi kartı, şifre vb.) yalnızca HTTPS protokolünü kullanan sitelerde girin.
+                                    Adres çubuğundaki kilit simgesi, bağlantının şifrelendiğini gösterir. Özellikle online alışveriş
+                                    ve bankacılık işlemlerinde bu noktaya dikkat edin.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                       data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    <i class="fas fa-shield-alt me-2" style="color: var(--accent-color);"></i> Güncel Güvenlik Yazılımları Kullanın
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+                                 data-bs-parent="#securityTipsAccordion">
+                                <div class="accordion-body">
+                                    Antivirüs ve kötü amaçlı yazılım tarayıcılarınızı güncel tutun. 
+                                    Tarayıcı eklentileri olan güvenlik çözümlerini tercih edin. URL Güvenlik Tarayıcı
+                                    gibi araçları düzenli olarak kullanarak internette daha güvenli gezinebilirsiniz.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

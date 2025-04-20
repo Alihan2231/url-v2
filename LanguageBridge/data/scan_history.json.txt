@@ -1,0 +1,18 @@
+[
+    {
+        "id": "318a2a26-0ecb-4e1a-a115-f48473f6907a",
+        "url": "https://developers.google.com/safe-browsing?hl=tr",
+        "is_safe": true,
+        "threat_types": [],
+        "timestamp": "2025-04-20T15:45:26.482745",
+        "raw_result": {}
+    },
+    {
+        "id": "cb5bfc88-5f27-4aa3-84de-3c83ecef059d",
+        "url": "https://www.vangardemusic.com/",
+        "is_safe": true,
+        "threat_types": [],
+        "timestamp": "2025-04-20T16:31:16.296555",
+        "raw_result": {}
+    }
+]

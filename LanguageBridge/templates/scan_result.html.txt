@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Result Header Section -->
+<section class="py-5 bg-black">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-light">Ana Sayfa</a></li>
+                        <li class="breadcrumb-item active text-light" aria-current="page">Tarama Sonucu</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="row align-items-center mb-5">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold">TARAMA SONUCU</h1>
+                <p class="lead">Google Safe Browsing API kullanılarak güvenlik analizi tamamlandı.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button class="btn btn-outline-light btn-lg me-2" onclick="copyReport()">
+                    <i class="fas fa-copy me-2"></i>Raporu Kopyala
+                </button>
+                <a href="/" class="btn btn-scanner">
+                    <i class="fas fa-search me-2"></i>Yeni Tarama
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Result Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Result Card -->
+        <div class="result-card mb-5">
+            <div class="row">
+                <div class="col-lg-3 text-center mb-4 mb-lg-0">
+                    <div class="p-3">
+                        {% if result.is_safe %}
+                            <i class="fas fa-shield-alt text-safe" style="font-size: 6rem;"></i>
+                            <div class="mt-3">
+                                <span class="badge bg-success p-2 fs-6 rounded-pill">GÜVENLİ</span>
+                            </div>
+                        {% else %}
+                            <i class="fas fa-exclamation-triangle text-threat" style="font-size: 6rem;"></i>
+                            <div class="mt-3">
+                                <span class="badge bg-danger p-2 fs-6 rounded-pill">TEHLİKELİ</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div id="report-content">
+                        <h2 class="mb-4">
+                            {% if result.is_safe %}
+                                <span class="text-safe fw-bold">URL GÜVENLİ</span>
+                            {% else %}
+                                <span class="text-threat fw-bold">TEHLİKELİ URL TESPİT EDİLDİ!</span>
+                            {% endif %}
+                        </h2>
+                        
+                        <div class="url-display mb-4" id="scan-url">{{ result.url }}</div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle fs-5 me-2 text-light"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Durum</small>
+                                        <span class="fw-bold fs-5 {% if result.is_safe %}text-safe{% else %}text-threat{% endif %}" id="scan-result">
+                                            {% if result.is_safe %}Güvenli{% else %}Tehlikeli{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock fs-5 me-2 text-light"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Tarama Zamanı</small>
+                                        <span class="fw-bold" id="scan-timestamp">{{ result.timestamp|string }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if not result.is_safe %}
+                            <div class="mt-4 p-4" style="background-color: rgba(244, 67, 54, 0.1); border-left: 4px solid var(--danger-color); border-radius: 4px;">
+                                <h4 class="text-threat mb-3"><i class="fas fa-virus me-2"></i>Tespit Edilen Tehditler</h4>
+                                <ul class="list-group list-group-flush border-0" id="threat-types">
+                                    {% for threat in result.threat_types %}
+                                    <li class="list-group-item border-0" style="background: transparent;">
+                                        <div class="d-flex">
+                                            <div class="me-3">
+                                                {% if threat == "MALWARE" %}
+                                                    <i class="fas fa-bug fs-3 text-threat"></i>
+                                                {% elif threat == "SOCIAL_ENGINEERING" %}
+                                                    <i class="fas fa-user-ninja fs-3 text-threat"></i>
+                                                {% elif threat == "UNWANTED_SOFTWARE" %}
+                                                    <i class="fas fa-puzzle-piece fs-3 text-threat"></i>
+                                                {% elif threat == "POTENTIALLY_HARMFUL_APPLICATION" %}
+                                                    <i class="fas fa-radiation fs-3 text-threat"></i>
+                                                {% else %}
+                                                    <i class="fas fa-question-circle fs-3 text-threat"></i>
+                                                {% endif %}
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1">{{ threat }}</h5>
+                                                <p>
+                                                    {% if threat == "MALWARE" %}
+                                                        Kötü amaçlı yazılım - bilgisayarınıza zarar verebilir veya bilgilerinizi çalabilir.
+                                                    {% elif threat == "SOCIAL_ENGINEERING" %}
+                                                        Sosyal mühendislik (phishing) - kişisel bilgilerinizi çalmaya çalışan sahte site.
+                                                    {% elif threat == "UNWANTED_SOFTWARE" %}
+                                                        İstenmeyen yazılım - bilgisayarınıza istenmeyen yazılım yükleyebilir.
+                                                    {% elif threat == "POTENTIALLY_HARMFUL_APPLICATION" %}
+                                                        Potansiyel olarak zararlı uygulama - cihazınıza zarar verebilir.
+                                                    {% else %}
+                                                        Bilinmeyen tehdit türü
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action & Information Section -->
+        <div class="row g-4">
+            <!-- Recommendations -->
+            <div class="col-lg-6">
+                <div class="feature-card h-100">
+                    <h3 class="mb-4">
+                        <i class="fas fa-lightbulb me-2" style="color: var(--accent-color);"></i>
+                        ÖNERİLER
+                    </h3>
+                    
+                    {% if result.is_safe %}
+                        <div class="p-3 mb-4" style="background-color: rgba(76, 175, 80, 0.1); border-left: 4px solid var(--success-color); border-radius: 4px;">
+                            <h5 class="text-safe mb-0"><i class="fas fa-check-circle me-2"></i>Bu URL şu anda güvenli görünüyor</h5>
+                        </div>
+                        
+                        <ul class="list-unstyled">
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-shield-alt fs-4" style="color: var(--accent-color);"></i>
+                                </div>
+                                <div>Her zaman çevrimiçi güvenliğinizi koruduğunuzdan emin olun.</div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-lock fs-4" style="color: var(--accent-color);"></i>
+                                </div>
+                                <div>Hassas bilgilerinizi girerken URL'nin "https://" ile başladığından emin olun.</div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-eye fs-4" style="color: var(--accent-color);"></i>
+                                </div>
+                                <div>Sitedeki içerik şüpheli geliyorsa, kişisel veya finansal bilgilerinizi paylaşmayın.</div>
+                            </li>
+                        </ul>
+                    {% else %}
+                        <div class="p-3 mb-4" style="background-color: rgba(244, 67, 54, 0.1); border-left: 4px solid var(--danger-color); border-radius: 4px;">
+                            <h5 class="text-threat mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Bu URL potansiyel olarak tehlikeli!</h5>
+                        </div>
+                        
+                        <ul class="list-unstyled">
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-ban fs-4 text-threat"></i>
+                                </div>
+                                <div>Bu URL'yi ziyaret etmekten kaçının.</div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-envelope fs-4 text-threat"></i>
+                                </div>
+                                <div>Eğer bu URL'yi bir e-posta veya mesajdan aldıysanız, gönderen kişiyle başka bir iletişim kanalından doğrulayın.</div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-virus-slash fs-4 text-threat"></i>
+                                </div>
+                                <div>Cihazınızda bir güvenlik taraması yapın.</div>
+                            </li>
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="me-3">
+                                    <i class="fas fa-key fs-4 text-threat"></i>
+                                </div>
+                                <div>Eğer bu siteyi ziyaret ettiyseniz ve kişisel bilgilerinizi girdiyseniz, şifrelerinizi değiştirin.</div>
+                            </li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- URL Information -->
+            <div class="col-lg-6">
+                <div class="feature-card h-100">
+                    <h3 class="mb-4">
+                        <i class="fas fa-info-circle me-2" style="color: var(--accent-color);"></i>
+                        URL BİLGİSİ
+                    </h3>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <div class="p-4" style="background-color: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <h5 class="mb-3">URL Analizi</h5>
+                                
+                                {% set parsed_url = result.url.split('://') %}
+                                {% if parsed_url|length > 1 %}
+                                    {% set protocol = parsed_url[0] %}
+                                    {% set rest = parsed_url[1].split('/')[0] %}
+                                    {% set domain_parts = rest.split('.') %}
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-sm-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-globe-americas fs-5 me-2" style="color: var(--accent-color);"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Protokol</small>
+                                                    <span class="fw-bold">{{ protocol }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-server fs-5 me-2" style="color: var(--accent-color);"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Alan Adı</small>
+                                                    <span class="fw-bold">{{ rest }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {% if domain_parts|length >= 2 %}
+                                        <div class="col-sm-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-sitemap fs-5 me-2" style="color: var(--accent-color);"></i>
+                                                <div>
+                                                    <small class="text-muted d-block">Üst Düzey Alan</small>
+                                                    <span class="fw-bold">.{{ domain_parts[-1] }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                {% else %}
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-link fs-5 me-2" style="color: var(--accent-color);"></i>
+                                        <div>
+                                            <small class="text-muted d-block">URL</small>
+                                            <span class="fw-bold">{{ result.url }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="p-4" style="background-color: rgba(0, 0, 0, 0.2); border-radius: 8px;">
+                                <h5 class="mb-3">Tarama Detayları</h5>
+                                
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-fingerprint fs-5 me-2" style="color: var(--accent-color);"></i>
+                                            <div>
+                                                <small class="text-muted d-block">Tarama ID</small>
+                                                <span class="fw-bold">{{ result.id }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-cogs fs-5 me-2" style="color: var(--accent-color);"></i>
+                                            <div>
+                                                <small class="text-muted d-block">Tarama Motoru</small>
+                                                <span class="fw-bold">Google Safe Browsing API</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
