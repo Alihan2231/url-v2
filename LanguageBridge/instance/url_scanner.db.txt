@@ -1,11 +1,0 @@
-SQLite format 3
-	id INTEGER NOT NULL, 
-	scan_id VARCHAR(36) NOT NULL, 
-	url VARCHAR(2048) NOT NULL, 
-	is_safe BOOLEAN NOT NULL, 
-	threat_types TEXT, 
-	timestamp DATETIME, 
-	raw_result TEXT, 
-	PRIMARY KEY (id), 
-	UNIQUE (scan_id)
-)/C
